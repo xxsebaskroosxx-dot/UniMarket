@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniMarket - Marketplace Universitario</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-brand"><div class="login-logo">🎓</div><h1>Uni<span>Market</span></h1><p>Marketplace universitario</p></div>
+      <h2>Iniciar sesión</h2>
+      <p class="login-description">Ingresa con tu usuario y contraseña para acceder a la plataforma.</p>
+      <form id="loginForm">
+        <label>Usuario</label><input id="loginUser" type="text" placeholder="Ingresa tu usuario" required>
+        <label>Contraseña</label>
+        <div class="password-field"><input id="loginPassword" type="password" placeholder="Ingresa tu contraseña" required><button type="button" onclick="togglePassword()">👁</button></div>
+        <div class="login-options"><label class="remember"><input type="checkbox" id="rememberMe"> Recordarme</label><button type="button" class="forgot" onclick="showDemoCredentials()">¿Olvidaste tu contraseña?</button></div>
+        <button class="primary login-button" type="submit">Ingresar</button><p class="login-error" id="loginError"></p>
+      </form>
+      <div class="demo-access"><strong>Acceso de demostración</strong><span>Usuario: <b>estudiante</b> · Contraseña: <b>123456</b></span></div>
+      <p class="register-text">¿No tienes una cuenta? <button type="button" onclick="demoRegister()">Crear cuenta</button></p>
+    </div>
+  </div>
+
+  <div class="app" id="mainApp">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-logo">🎓</div><div><h2>Uni<span>Market</span></h2><small>Marketplace universitario</small></div></div>
+      <nav>
+        <button class="nav-item active" data-section="inicio">⌂ <span>Inicio</span></button>
+        <button class="nav-item" data-section="categorias">▦ <span>Categorías</span></button>
+        <button class="nav-item" data-section="publicaciones">▤ <span>Mis publicaciones</span></button>
+        <button class="nav-item" data-section="favoritos">♡ <span>Favoritos</span></button>
+        <button class="nav-item" data-section="mensajes">◌ <span>Mensajes</span><b>3</b></button>
+        <button class="nav-item" data-section="notificaciones">♧ <span>Notificaciones</span><b>2</b></button>
+      </nav>
+      <div class="line"></div>
+      <nav>
+        <button class="nav-item">♙ <span>Mi perfil</span></button>
+        <button class="nav-item">⚙ <span>Configuración</span></button>
+        <button class="nav-item" onclick="logout()">↪ <span>Cerrar sesión</span></button>
+      </nav>
+      <div class="community"><div class="students">👨🏻‍🎓 👩🏻‍🎓 👨🏻‍🎓</div><h3>Una comunidad<br>más fuerte</h3><p>Dale una segunda vida a lo que ya no usas.</p><button onclick="openPublish()">Publicar producto</button></div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar"><div class="search"><span>⌕</span><input id="searchInput" type="text" placeholder="Buscar productos, categorías o usuarios..."></div><div class="top-actions"><span class="icon">✉</span><span class="icon notification">♧<i>2</i></span><div class="user"><div class="avatar">S</div><span id="loggedUser">estudiante⌄</span></div></div></header>
+
+      <section id="inicio" class="page-section active-section">
+        <div class="hero"><div class="hero-text"><h1>Compra y vende<br>entre estudiantes</h1><p>Encuentra lo que necesitas o vende lo que<br>ya no usas. Fácil, rápido y seguro.</p><button class="primary" onclick="openPublish()">Publicar producto →</button></div><div class="hero-image">👩🏻‍💻 👨🏻‍💻</div></div>
+        <div class="section-heading"><h2>Categorías</h2><button onclick="showSection('categorias')">Ver todas →</button></div>
+        <div class="categories"><button class="category" data-category="Libros">📖<span>Libros</span></button><button class="category" data-category="Electrónica">💻<span>Electrónica</span></button><button class="category" data-category="Ropa">👕<span>Ropa</span></button><button class="category" data-category="Papelería">✏️<span>Papelería</span></button><button class="category" data-category="Muebles">🛋️<span>Muebles</span></button><button class="category" data-category="Deportes">⚽<span>Deportes</span></button><button class="category" data-category="Otros">•••<span>Otros</span></button></div>
+        <div class="section-heading"><h2>Productos destacados</h2><button onclick="showSection('categorias')">Ver todas →</button></div><div class="products" id="productGrid"></div>
+        <div class="benefits"><div>👥 <strong>100% Universitario</strong><small>Hecho para estudiantes</small></div><div>🛡️ <strong>Seguro y confiable</strong><small>Perfiles verificados</small></div><div>⚡ <strong>Fácil y rápido</strong><small>Publica en minutos</small></div></div>
+        <section class="stats"><div><span>👥</span><p>Estudiantes activos<strong>1.256</strong><em>↑ 12% este mes</em></p></div><div><span>▣</span><p>Publicaciones<strong>842</strong><em>↑ 18% este mes</em></p></div><div><span>♢</span><p>Transacciones<strong>312</strong><em>↑ 8% este mes</em></p></div><div><span>🛡</span><p>Comunidad segura<strong>100%</strong><em>Perfiles verificados</em></p></div></section>
+      </section>
+
+      <section id="categorias" class="page-section"><h1 class="page-title">Categorías</h1><p class="page-subtitle">Encuentra productos según lo que necesitas.</p><div class="category-large" id="categoryList"></div><div class="products" id="categoryProducts"></div></section>
+      <section id="publicaciones" class="page-section"><h1 class="page-title">Mis publicaciones</h1><button class="primary" onclick="openPublish()">+ Publicar nuevo producto</button><div class="my-list"><article><span>📖</span><div><strong>Libro Cálculo Stewart</strong><p>$80.000 · Activa</p></div></article><article><span>🎒</span><div><strong>Mochila Totto Original</strong><p>$95.000 · Activa</p></div></article><article><span>👕</span><div><strong>Buzo Universidad</strong><p>$60.000 · Pendiente</p></div></article></div></section>
+      <section id="favoritos" class="page-section"><h1 class="page-title">Favoritos</h1><p class="page-subtitle">Productos que guardaste para consultar después.</p><div class="products" id="favoriteGrid"></div></section>
+      <section id="mensajes" class="page-section"><h1 class="page-title">Mensajes</h1><div class="chat-list"><div>👩🏻 <strong>María G.</strong><span>¿Aún tienes los audífonos?</span></div><div>👨🏻 <strong>Juan P.</strong><span>Listo, te espero.</span></div><div>👨🏽 <strong>Carlos R.</strong><span>¿Aún disponible?</span></div><div>👩🏻 <strong>Daniela S.</strong><span>Gracias!</span></div></div></section>
+      <section id="notificaciones" class="page-section"><h1 class="page-title">Notificaciones</h1><div class="notice">🔔 María G. está interesada en tus audífonos.</div><div class="notice">💚 Tu publicación recibió un nuevo favorito.</div><div class="notice">✓ Tu perfil universitario fue verificado.</div></section>
+    </main>
+  </div>
+
+  <div class="modal" id="publishModal"><div class="modal-box"><button class="close" onclick="closePublish()">×</button><h2>Publicar producto</h2><p>Agrega la información del producto que quieres vender.</p><input id="newName" placeholder="Nombre del producto"><input id="newPrice" type="number" placeholder="Precio en COP"><select id="newCategory"><option>Libros</option><option>Electrónica</option><option>Ropa</option><option>Papelería</option><option>Muebles</option><option>Deportes</option><option>Otros</option></select><textarea id="newDescription" placeholder="Descripción"></textarea><button class="primary full" onclick="publishProduct()">Publicar producto</button></div></div>
+  <script src="script.js"></script>
+</body>
+</html>
