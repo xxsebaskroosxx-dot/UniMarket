@@ -220,6 +220,15 @@
       <select name="newCategory" [(ngModel)]="newCategory">
         @for (category of categories; track category) { <option [value]="category">{{ category }}</option> }
       </select>
+      <label class="field-label" for="newListingType">Tipo de publicación</label>
+      <select id="newListingType" name="newListingType" [(ngModel)]="newListingType">
+        <option value="Venta">Venta</option>
+        <option value="Intercambio">Intercambio / Trueque</option>
+      </select>
+      @if (newListingType === 'Intercambio') {
+        <input name="newTradeWishlist" [(ngModel)]="newTradeWishlist" placeholder="¿Qué te gustaría recibir a cambio?">
+        <p class="form-hint">Ejemplo: libros de programación, calculadora científica o una bicicleta.</p>
+      }
       @if (editingProduct) {
         <label class="field-label" for="newState">Estado de la publicación</label>
         <select id="newState" name="newState" [(ngModel)]="newState">
@@ -272,6 +281,9 @@
             <span class="detail-category">{{ selectedProduct.category }}</span>
             <span class="detail-state">{{ selectedProduct.state }}</span>
           </div>
+          @if (selectedProduct.listingType === 'Intercambio') {
+            <div class="trade-banner"><strong>Trueque universitario</strong><span>Busca: {{ selectedProduct.tradeWishlist || 'acepta propuestas' }}</span></div>
+          }
           <h2>{{ selectedProduct.name }}</h2>
           <div class="detail-price">{{ selectedProduct.price | currency:'COP':'symbol-narrow':'1.0-0':'es-CO' }}</div>
           <div class="detail-meta">
