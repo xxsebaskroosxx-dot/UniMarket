@@ -40,18 +40,23 @@ import { ProductSortOption, strategyFor } from './strategies/product-sort.strate
 export class App implements OnInit, OnDestroy {
   private readonly marketplace = inject(MarketplaceService);
   private readonly changeDetector = inject(ChangeDetectorRef);
-  readonly categories = ['Libros', 'Electrónica', 'Ropa', 'Papelería', 'Muebles', 'Deportes', 'Otros'];
-  readonly categoryIcons = ['📖', '💻', '👕', '✏️', '🛋️', '⚽', '•••'];
+  readonly categories = [
+    'Libros', 'Computadores', 'Celulares y accesorios', 'ElectrÃ³nica', 'Videojuegos',
+    'Ropa y accesorios', 'PapelerÃ­a', 'Muebles', 'Hogar y cocina', 'Deportes',
+    'Bicicletas y movilidad', 'Instrumentos musicales', 'Arte y coleccionables',
+    'Servicios estudiantiles', 'TutorÃ­as y cursos', 'Empleo y proyectos', 'Otros',
+  ];
+  readonly categoryIcons = ['ðŸ“–', 'ðŸ’»', 'ðŸ“±', 'ðŸ”Œ', 'ðŸŽ®', 'ðŸ‘•', 'âœï¸', 'ðŸ›‹ï¸', 'ðŸ³', 'âš½', 'ðŸš²', 'ðŸŽ¸', 'ðŸŽ¨', 'ðŸ› ï¸', 'ðŸ“š', 'ðŸ’¼', 'â€¢â€¢â€¢'];
   readonly navigation = [
     { id: 'ayuda', icon: '?', label: 'Ayuda y seguridad' },
-    { id: 'inicio', icon: '⌂', label: 'Inicio' },
-    { id: 'categorias', icon: '▦', label: 'Categorías' },
-    { id: 'publicaciones', icon: '▤', label: 'Mis publicaciones' },
-    { id: 'favoritos', icon: '♡', label: 'Favoritos' },
-    { id: 'mensajes', icon: '◌', label: 'Mensajes' },
-    { id: 'notificaciones', icon: '♧', label: 'Notificaciones', badge: '2' },
-    { id: 'perfil', icon: '♙', label: 'Mi perfil' },
-    { id: 'configuracion', icon: '⚙', label: 'Configuración' },
+    { id: 'inicio', icon: 'âŒ‚', label: 'Inicio' },
+    { id: 'categorias', icon: 'â–¦', label: 'CategorÃ­as' },
+    { id: 'publicaciones', icon: 'â–¤', label: 'Mis publicaciones' },
+    { id: 'favoritos', icon: 'â™¡', label: 'Favoritos' },
+    { id: 'mensajes', icon: 'â—Œ', label: 'Mensajes' },
+    { id: 'notificaciones', icon: 'â™§', label: 'Notificaciones', badge: '2' },
+    { id: 'perfil', icon: 'â™™', label: 'Mi perfil' },
+    { id: 'configuracion', icon: 'âš™', label: 'ConfiguraciÃ³n' },
   ];
   readonly supabaseConfigured = this.marketplace.isConfigured;
   products: Product[] = [];
@@ -232,7 +237,7 @@ export class App implements OnInit, OnDestroy {
   async deleteSelectedProduct(): Promise<void> {
     const product = this.selectedProduct;
     if (!product || (this.currentUserRole !== 'admin' && product.ownerId !== this.currentUserId)) return;
-    if (!window.confirm(`¿Seguro que quieres eliminar "${product.name}"? Esta acción no se puede deshacer.`)) return;
+    if (!window.confirm(`Â¿Seguro que quieres eliminar "${product.name}"? Esta acciÃ³n no se puede deshacer.`)) return;
 
     this.deletingProduct = true;
     this.productDeleteError = '';
@@ -373,7 +378,7 @@ export class App implements OnInit, OnDestroy {
   async publishProduct(): Promise<void> {
     if (this.publishing || this.savingProductChanges) return;
     if (!this.newName.trim() || !this.newPrice || this.newPrice <= 0) {
-      this.publishError = 'Ingresa el nombre del producto y un precio válido.';
+      this.publishError = 'Ingresa el nombre del producto y un precio vÃ¡lido.';
       return;
     }
     if (this.editingProduct) {
@@ -388,7 +393,7 @@ export class App implements OnInit, OnDestroy {
         name: this.newName.trim(),
         price: this.newPrice,
         category: this.newCategory,
-        emoji: '📦',
+        emoji: 'ðŸ“¦',
         state: 'Publicado',
         listingType: this.newListingType,
         tradeWishlist: this.newListingType === 'Intercambio' ? this.newTradeWishlist.trim() || undefined : undefined,
@@ -444,7 +449,7 @@ export class App implements OnInit, OnDestroy {
     } catch (error) {
       const message = this.messageFor(error);
       this.publishError = /row.level security|permission denied|42501/i.test(message)
-        ? 'Supabase bloqueó el guardado por permisos. Ejecuta supabase/admin-role-migration.sql en el SQL Editor de Supabase y vuelve a iniciar sesión.'
+        ? 'Supabase bloqueÃ³ el guardado por permisos. Ejecuta supabase/admin-role-migration.sql en el SQL Editor de Supabase y vuelve a iniciar sesiÃ³n.'
         : message;
     } finally {
       this.savingProductChanges = false;
@@ -477,13 +482,13 @@ export class App implements OnInit, OnDestroy {
 
   async resetPassword(): Promise<void> {
     if (!this.loginUser.trim()) {
-      this.loginError = 'Escribe tu correo electrónico para enviarte el enlace.';
+      this.loginError = 'Escribe tu correo electrÃ³nico para enviarte el enlace.';
       this.loginErrorSuccess = false;
       return;
     }
     try {
       await this.marketplace.resetPassword(this.loginUser.trim());
-      this.loginError = 'Si existe una cuenta con ese correo, recibirás un enlace para restablecer la contraseña.';
+      this.loginError = 'Si existe una cuenta con ese correo, recibirÃ¡s un enlace para restablecer la contraseÃ±a.';
       this.loginErrorSuccess = true;
     } catch (error) {
       this.loginError = this.messageFor(error);
@@ -497,11 +502,11 @@ export class App implements OnInit, OnDestroy {
     this.loginError = '';
     this.loginErrorSuccess = false;
     if (this.recoveryPassword.length < 6) {
-      this.loginError = 'La contraseña debe tener al menos 6 caracteres.';
+      this.loginError = 'La contraseÃ±a debe tener al menos 6 caracteres.';
       return;
     }
     if (this.recoveryPassword !== this.recoveryPasswordConfirmation) {
-      this.loginError = 'Las contraseñas no coinciden.';
+      this.loginError = 'Las contraseÃ±as no coinciden.';
       return;
     }
 
@@ -512,7 +517,7 @@ export class App implements OnInit, OnDestroy {
       this.passwordRecovery = false;
       this.recoveryPassword = '';
       this.recoveryPasswordConfirmation = '';
-      this.loginError = 'Contraseña actualizada. Ya puedes iniciar sesión.';
+      this.loginError = 'ContraseÃ±a actualizada. Ya puedes iniciar sesiÃ³n.';
       this.loginErrorSuccess = true;
     } catch (error) {
       this.loginError = this.messageFor(error);
@@ -528,17 +533,17 @@ export class App implements OnInit, OnDestroy {
       return;
     }
     if (!/^[a-zA-Z0-9_]{3,24}$/.test(this.registerUsername.trim())) {
-      this.loginError = 'El usuario debe tener entre 3 y 24 caracteres: letras, números o guion bajo.';
+      this.loginError = 'El usuario debe tener entre 3 y 24 caracteres: letras, nÃºmeros o guion bajo.';
       this.loginErrorSuccess = false;
       return;
     }
     if (this.registerPassword.length < 6) {
-      this.loginError = 'La contraseña debe tener al menos 6 caracteres.';
+      this.loginError = 'La contraseÃ±a debe tener al menos 6 caracteres.';
       this.loginErrorSuccess = false;
       return;
     }
     if (this.registerPassword !== this.registerConfirmPassword) {
-      this.loginError = 'Las contraseñas no coinciden.';
+      this.loginError = 'Las contraseÃ±as no coinciden.';
       this.loginErrorSuccess = false;
       return;
     }
@@ -553,7 +558,7 @@ export class App implements OnInit, OnDestroy {
       this.registerPassword = '';
       this.registerConfirmPassword = '';
       this.loginError = confirmationRequired
-        ? 'Cuenta creada. Revisa tu correo y confirma la cuenta antes de iniciar sesión.'
+        ? 'Cuenta creada. Revisa tu correo y confirma la cuenta antes de iniciar sesiÃ³n.'
         : 'Cuenta creada. Ya puedes empezar a usar UniMarket.';
       this.loginErrorSuccess = true;
     } catch (error) {
@@ -670,25 +675,25 @@ export class App implements OnInit, OnDestroy {
       const normalized = maybeMessage.toLowerCase();
 
       if (maybeStatus === 429 || normalized.includes('rate limit') || normalized.includes('too many requests')) {
-        return 'El proyecto de Supabase está temporalmente bloqueando el envío de correos por demasiados intentos. Espera unos minutos y vuelve a intentarlo o usa otro correo.';
+        return 'El proyecto de Supabase estÃ¡ temporalmente bloqueando el envÃ­o de correos por demasiados intentos. Espera unos minutos y vuelve a intentarlo o usa otro correo.';
       }
 
       if (normalized.includes('user already registered') || normalized.includes('already registered')) {
-        return 'Este correo ya está registrado en UniMarket.';
+        return 'Este correo ya estÃ¡ registrado en UniMarket.';
       }
 
       if (normalized.includes('invalid login credentials') || normalized.includes('invalid credentials')) {
-        return 'Las credenciales no son válidas. Verifica tu correo y contraseña.';
+        return 'Las credenciales no son vÃ¡lidas. Verifica tu correo y contraseÃ±a.';
       }
 
       if (normalized.includes('email') && normalized.includes('confirm')) {
-        return 'Revisa tu correo para confirmar la cuenta antes de iniciar sesión.';
+        return 'Revisa tu correo para confirmar la cuenta antes de iniciar sesiÃ³n.';
       }
 
       if (maybeMessage) return maybeMessage;
     }
 
     if (error instanceof Error) return error.message;
-    return 'Ocurrió un error inesperado. Inténtalo de nuevo.';
+    return 'OcurriÃ³ un error inesperado. IntÃ©ntalo de nuevo.';
   }
 }
