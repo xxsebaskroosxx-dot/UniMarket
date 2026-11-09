@@ -1,0 +1,32 @@
+<article class="product" tabindex="0" (click)="openProductDetails()" (keydown.enter)="openProductDetails()" (keydown.space)="openProductDetails()">
+  <div class="product-img">
+    @if (product().images?.length) {
+      <img [src]="product().images![0]" [alt]="product().name" />
+    } @else {
+      <span class="product-emoji" aria-hidden="true">{{ product().emoji }}</span>
+    }
+    <button class="heart" [class.liked]="isFavorite()" type="button" (click)="toggleFavorite($event)" [attr.aria-label]="isFavorite() ? 'Quitar de favoritos' : 'Agregar a favoritos'" [attr.aria-pressed]="isFavorite()">
+      {{ isFavorite() ? '♥' : '♡' }}
+    </button>
+  </div>
+
+  <div class="product-info">
+    <div class="product-meta-row">
+      <span class="state">{{ product().state }}</span>
+      <span class="product-category">{{ product().category }}</span>
+    </div>
+    <h3>{{ product().name }}</h3>
+    <p class="price">{{ formattedPrice() }}</p>
+    <div class="product-location">⌖ {{ product().ownerUsername || 'Campus universitario' }}</div>
+    @if (product().description) {
+      <p class="product-description">{{ product().description }}</p>
+    }
+    <div class="product-footer-row">
+      <span class="seller-name">{{ product().ownerUsername || 'Vendedor' }}</span>
+      <span class="details-link">Ver más</span>
+    </div>
+    @if (product().ownerId && product().ownerId !== viewerId()) {
+      <button class="primary" type="button" (click)="messageSeller($event)">Escribir a {{ product().ownerUsername }}</button>
+    }
+  </div>
+</article>
