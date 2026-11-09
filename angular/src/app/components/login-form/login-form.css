@@ -1,0 +1,69 @@
+:host {
+  display: contents;
+}
+
+.login-steps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 24px;
+  color: #98a2b3;
+  font-size: 12px;
+}
+
+.login-steps > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.login-steps > span::first-letter {
+  font-weight: 700;
+}
+
+.login-steps > span.current,
+.login-steps > span.complete {
+  color: #087a35;
+  font-weight: 700;
+}
+
+.login-steps > i {
+  height: 1px;
+  flex: 1;
+  background: #e6e9ed;
+}
+
+.selected-email {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  border: 1px solid #e6e9ed;
+  border-radius: 10px;
+  background: #f8faf9;
+}
+
+.selected-email > span {
+  grid-column: 1;
+  color: #667085;
+  font-size: 11px;
+}
+
+.selected-email > strong {
+  grid-column: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+}
+
+.selected-email > button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  color: #087a35;
+  font-size: 12px;
+  font-weight: 700;
+}

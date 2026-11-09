@@ -1,0 +1,14 @@
+<div class="products">
+  @for (product of products; track product.id) {
+    <app-product-card
+      [product]="product"
+      [isFavorite]="favoriteIds.includes(product.id)"
+      [viewerId]="viewerId"
+      (favoriteChange)="onFavoriteChange($event)"
+      (contactSeller)="contactSeller.emit($event)"
+      (productClick)="onProductClick($event)"
+    ></app-product-card>
+  } @empty {
+    <p>No se encontraron productos.</p>
+  }
+</div>

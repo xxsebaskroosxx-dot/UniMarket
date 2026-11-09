@@ -1,0 +1,69 @@
+<div class="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-logo">🎓</div>
+      <h1>Uni<span>Market</span></h1>
+      <p>Marketplace universitario</p>
+    </div>
+
+    <h2>Iniciar sesión</h2>
+    <p class="login-description">
+      {{ step === 'email' ? 'Primero ingresa tu correo electrónico.' : 'Ahora ingresa la contraseña de tu cuenta.' }}
+    </p>
+    <div class="login-steps" aria-label="Paso del inicio de sesión">
+      <span [class.current]="step === 'email'" [class.complete]="step === 'password'">1 <span>Correo</span></span>
+      <i></i>
+      <span [class.current]="step === 'password'">2 <span>Contraseña</span></span>
+    </div>
+
+    @if (step === 'email') {
+      <form (ngSubmit)="continueToPassword()">
+        <label for="loginUser">Correo electrónico</label>
+        <input
+          id="loginUser"
+          name="loginUser"
+          [ngModel]="emailDraft"
+          (ngModelChange)="emailDraft = $event"
+          type="email"
+          placeholder="tu@correo.com"
+          required
+        />
+        <div class="login-options">
+          <button type="button" class="forgot" (click)="onResetPassword()">¿Olvidaste tu contraseña?</button>
+        </div>
+        <button class="primary login-button" type="submit">Continuar</button>
+      </form>
+    } @else {
+      <form (ngSubmit)="onLogin()">
+        <div class="selected-email">
+          <span>Correo electrónico</span>
+          <strong>{{ emailDraft }}</strong>
+          <button type="button" (click)="backToEmail()">Cambiar</button>
+        </div>
+        <label for="loginPassword">Contraseña</label>
+        <div class="password-field">
+          <input
+            id="loginPassword"
+            name="loginPassword"
+            [ngModel]="loginPassword"
+            (ngModelChange)="loginPasswordChange.emit($event)"
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="Ingresa tu contraseña"
+            required
+          />
+          <button type="button" (click)="togglePassword()" aria-label="Mostrar u ocultar contraseña">👁</button>
+        </div>
+        <div class="login-options">
+          <button type="button" class="forgot" (click)="onResetPassword()">¿Olvidaste tu contraseña?</button>
+        </div>
+        <button class="primary login-button" type="submit">Iniciar sesión</button>
+      </form>
+    }
+
+    <p class="login-error" [class.success]="loginErrorSuccess">{{ loginError }}</p>
+    <p class="register-text">
+      ¿No tienes una cuenta?
+      <button type="button" (click)="onOpenRegister()">Crear cuenta</button>
+    </p>
+  </div>
+</div>

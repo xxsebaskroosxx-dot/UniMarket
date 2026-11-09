@@ -1,0 +1,36 @@
+<aside class="sidebar" [class.mobile-open]="mobileOpen">
+  <div class="brand">
+    <div class="brand-logo">🎓</div>
+    <div>
+      <h2>Uni<span>Market</span></h2>
+      <small>Marketplace universitario</small>
+    </div>
+  </div>
+
+  <nav>
+    @for (item of navigation.slice(0, 6); track item.id) {
+      <button class="nav-item" [class.active]="activeSection === item.id" (click)="selectSection(item.id)">
+        {{ item.icon }} <span>{{ item.label }}</span>
+        @if (item.badge) { <b>{{ item.badge }}</b> }
+      </button>
+    }
+  </nav>
+
+  <div class="line"></div>
+
+  <nav>
+    @for (item of navigation.slice(6); track item.id) {
+      <button class="nav-item" [class.active]="activeSection === item.id" (click)="selectSection(item.id)">
+        {{ item.icon }} <span>{{ item.label }}</span>
+      </button>
+    }
+    <button class="nav-item" (click)="logout()">↪ <span>Cerrar sesión</span></button>
+  </nav>
+
+  <div class="community">
+    <div class="students">👨🏻‍🎓 👩🏻‍🎓 👨🏻‍🎓</div>
+    <h3>Una comunidad<br>más fuerte</h3>
+    <p>Dale una segunda vida a lo que ya no usas.</p>
+    <button (click)="publish()">Publicar producto</button>
+  </div>
+</aside>

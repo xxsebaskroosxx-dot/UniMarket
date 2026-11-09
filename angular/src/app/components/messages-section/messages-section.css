@@ -1,0 +1,43 @@
+:host {
+  display: contents;
+}
+
+.chat-search {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid #edf0ed;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.chat-search label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chat-search input {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.chat-search .primary {
+  padding: 9px 12px;
+}
+
+.user-results {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chat-empty {
+  padding: 18px;
+  color: var(--gray);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}

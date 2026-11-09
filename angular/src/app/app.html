@@ -1,0 +1,269 @@
+@if (!supabaseConfigured) {
+  <main class="setup-screen">
+    <div class="setup-card">
+      <div class="login-logo">🎓</div>
+      <h1>Uni<span>Market</span></h1>
+      <h2>Conecta Supabase para empezar</h2>
+      <p>Las cuentas, publicaciones y mensajes reales necesitan un proyecto de Supabase.</p>
+      <ol>
+        <li>Crea un proyecto en Supabase.</li>
+        <li>Ejecuta el archivo <code>supabase/schema.sql</code> en el SQL Editor del proyecto.</li>
+        <li>Copia la URL del proyecto y su clave pública (anon/publishable) en <code>src/environments/environment.ts</code>.</li>
+      </ol>
+      <p>No uses la clave <code>service_role</code> en el navegador.</p>
+    </div>
+  </main>
+} @else if (passwordRecovery) {
+  <main class="setup-screen">
+    <form class="setup-card" (ngSubmit)="saveRecoveredPassword()">
+      <div class="login-logo">🎓</div>
+      <h1>Uni<span>Market</span></h1>
+      <h2>Restablecer contraseña</h2>
+      <p>Escribe tu nueva contraseña para recuperar el acceso a tu cuenta.</p>
+      <label for="recoveryPassword">Nueva contraseña</label>
+      <input id="recoveryPassword" name="recoveryPassword" [(ngModel)]="recoveryPassword" type="password" minlength="6" required>
+      <label for="recoveryPasswordConfirmation">Confirmar contraseña</label>
+      <input id="recoveryPasswordConfirmation" name="recoveryPasswordConfirmation" [(ngModel)]="recoveryPasswordConfirmation" type="password" minlength="6" required>
+      <p class="login-error">{{ loginError }}</p>
+      <button class="primary login-button" type="submit">Guardar contraseña</button>
+    </form>
+  </main>
+} @else if (!loggedUser) {
+  <app-login-form
+    [loginUser]="loginUser"
+    [loginPassword]="loginPassword"
+    [showPassword]="showPassword"
+    [loginError]="loginError"
+    [loginErrorSuccess]="loginErrorSuccess"
+    (loginUserChange)="loginUser = $event"
+    (loginPasswordChange)="loginPassword = $event"
+    (showPasswordChange)="showPassword = $event"
+    (submitLogin)="login()"
+    (resetPassword)="resetPassword()"
+    (openRegister)="registerOpen = true"
+  ></app-login-form>
+
+  <div class="modal auth-modal" [class.show]="registerOpen" (click)="registerOpen = false">
+    <form class="modal-box" (ngSubmit)="register()" (click)="$event.stopPropagation()">
+      <button class="close" type="button" aria-label="Cerrar" (click)="registerOpen = false">×</button>
+      <h2>Crear cuenta</h2>
+      <p>Únete a la comunidad UniMarket.</p>
+      <input name="registerName" [(ngModel)]="registerName" placeholder="Nombre completo" required>
+      <input name="registerUsername" [(ngModel)]="registerUsername" placeholder="Nombre de usuario (3-24 caracteres)" required>
+      <input name="registerEmail" [(ngModel)]="registerEmail" type="email" placeholder="Correo electrónico" required>
+      <input name="registerPassword" [(ngModel)]="registerPassword" type="password" placeholder="Contraseña (mínimo 6 caracteres)" required>
+      <input name="registerConfirmPassword" [(ngModel)]="registerConfirmPassword" type="password" placeholder="Confirmar contraseña" required>
+      <p class="login-error" [class.success]="loginErrorSuccess">{{ loginError }}</p>
+      <button class="primary full" type="submit">Crear cuenta</button>
+    </form>
+  </div>
+} @else {
+  <div class="app">
+    <app-sidebar
+      [navigation]="navigation"
+      [activeSection]="activeSection"
+      [mobileOpen]="mobileMenuOpen"
+      (sectionChange)="showSection($event)"
+      (logoutRequest)="logout()"
+      (publishRequest)="openNewProductForm()"
+    ></app-sidebar>
+
+    <main class="content">
+      <header class="topbar">
+        <button
+          class="mobile-menu-toggle"
+          type="button"
+          [attr.aria-expanded]="mobileMenuOpen"
+          aria-label="Abrir menú de navegación"
+          (click)="mobileMenuOpen = !mobileMenuOpen"
+        >☰</button>
+        <div class="mobile-brand"><span aria-hidden="true">🎓</span><strong>Uni<span>Market</span></strong></div>
+        <label class="search">
+          <span>⌕</span>
+          <input aria-label="Buscar productos" name="searchTerm" [(ngModel)]="searchTerm" placeholder="Buscar productos, categorías o usuarios...">
+        </label>
+        <div class="top-actions">
+          <button class="icon favorite-shortcut" type="button" aria-label="Favoritos" (click)="showSection('favoritos')">
+            ♡ @if (favorites.length > 0) { <i>{{ favorites.length }}</i> }
+          </button>
+          <button class="icon" type="button" aria-label="Mensajes" (click)="showSection('mensajes')">✉</button>
+          <button class="icon notification" type="button" aria-label="Notificaciones" (click)="showSection('notificaciones')">♧<i>2</i></button>
+          <button class="user" type="button" (click)="showSection('perfil')">
+            <span class="avatar">{{ loggedUser.slice(0, 1).toUpperCase() }}</span>
+            <span>{{ loggedUser }} @if (currentUserRole === 'admin') { <strong class="admin-badge">Admin</strong> }⌄</span>
+          </button>
+        </div>
+      </header>
+      @if (dataError) {
+        <p class="login-error">{{ dataError }}</p>
+      }
+
+      @switch (activeSection) {
+        @case ('inicio') {
+          <app-home-section
+            [categories]="categories"
+            [categoryIcons]="categoryIcons"
+            [products]="visibleProducts"
+            [favoriteIds]="favorites"
+            [viewerId]="currentUserId"
+            (categorySelected)="filterCategory($event)"
+            (showAllCategories)="showSection('categorias')"
+            (favoriteChange)="toggleFavorite($event.id)"
+            (publishRequest)="openNewProductForm()"
+            (contactSeller)="openConversation($event.userId)"
+            (productClick)="openProductDetails($event)"
+          ></app-home-section>
+        }
+        @case ('categorias') {
+          <app-categories-section
+            [categories]="categories"
+            [categoryIcons]="categoryIcons"
+            [products]="visibleProducts"
+            [favoriteIds]="favorites"
+            [activeCategory]="activeCategory"
+            [viewerId]="currentUserId"
+            (categorySelected)="filterCategory($event)"
+            (clearCategory)="activeCategory = ''"
+            (favoriteChange)="toggleFavorite($event.id)"
+            (contactSeller)="openConversation($event.userId)"
+            (productClick)="openProductDetails($event)"
+          ></app-categories-section>
+        }
+        @case ('publicaciones') {
+          <app-my-listings-section
+            [products]="myProducts"
+            [isAdmin]="currentUserRole === 'admin'"
+            (publishRequest)="openNewProductForm()"
+            (productClick)="openProductDetails($event)"
+          ></app-my-listings-section>
+        }
+        @case ('favoritos') {
+          <app-favorites-section
+            [products]="favoriteProducts"
+            [favoriteIds]="favorites"
+            [viewerId]="currentUserId"
+            (favoriteChange)="toggleFavorite($event.id)"
+            (exploreMarketplace)="showSection('categorias')"
+            (contactSeller)="openConversation($event.userId)"
+            (productClick)="openProductDetails($event)"
+          ></app-favorites-section>
+        }
+        @case ('mensajes') {
+          <app-messages-section
+            [conversations]="conversations"
+            [activeChat]="activeChat"
+            [chatInput]="chatInput"
+            [searchTerm]="chatSearchTerm"
+            [searchResults]="searchResults"
+            [chatError]="chatError"
+            [sending]="sendingMessage"
+            (activeChatChange)="selectChat($event)"
+            (chatInputChange)="chatInput = $event"
+            (sendMessage)="sendMessage()"
+            (searchTermChange)="chatSearchTerm = $event"
+            (searchUsers)="searchUsers()"
+            (startConversation)="startConversation($event)"
+          ></app-messages-section>
+        }
+        @case ('notificaciones') {
+          <app-notifications-section></app-notifications-section>
+        }
+        @case ('perfil') {
+          <app-profile-section
+            [loggedUser]="loggedUser"
+            [role]="currentUserRole"
+            [productCount]="products.length"
+            [favoriteCount]="favorites.length"
+          ></app-profile-section>
+        }
+        @case ('configuracion') {
+          <app-settings-section
+            [darkMode]="darkMode"
+            [privateProfile]="privateProfile"
+            (darkModeChange)="toggleDarkMode($event)"
+            (privateProfileChange)="togglePrivacy($event)"
+          ></app-settings-section>
+        }
+      }
+    </main>
+  </div>
+
+  <div class="modal" [class.show]="publishOpen" (click)="closeProductForm()">
+    <form class="modal-box" (ngSubmit)="publishProduct()" (click)="$event.stopPropagation()">
+      <button class="close" type="button" aria-label="Cerrar" (click)="closeProductForm()">×</button>
+      <h2>{{ editingProduct ? 'Editar publicación' : 'Publicar producto' }}</h2>
+      <p>{{ editingProduct ? 'Actualiza los datos de tu producto.' : 'Comparte con la comunidad algo que ya no uses.' }}</p>
+      <input name="newName" [(ngModel)]="newName" placeholder="Nombre del producto" required>
+      <input name="newPrice" [(ngModel)]="newPrice" type="number" min="1" placeholder="Precio en pesos" required>
+      <select name="newCategory" [(ngModel)]="newCategory">
+        @for (category of categories; track category) { <option [value]="category">{{ category }}</option> }
+      </select>
+      <textarea name="newDescription" [(ngModel)]="newDescription" placeholder="Descripción (opcional)"></textarea>
+      @if (editingProduct) {
+        <p class="edit-images-note">Las fotografías actuales se conservarán al guardar los cambios.</p>
+        <div class="image-preview">@for (image of newProductImages; track $index) { <img [src]="image" alt="Fotografía actual del producto"> }</div>
+      } @else {
+        <label class="image-upload" for="product-images">Añadir fotografías<span>Selecciona una o varias imágenes.</span></label>
+        <input id="product-images" type="file" accept="image/*" multiple (change)="onImagesSelected($event)">
+        <div class="image-preview">@for (image of newProductImages; track $index) { <img [src]="image" alt="Vista previa del producto"> }</div>
+      }
+      @if (savingProductChanges || publishing) {
+        <p class="product-saving-status" role="status">
+          {{ savingProductChanges ? 'Guardando cambios…' : 'Publicando producto…' }}
+        </p>
+      }
+      <p class="login-error" role="alert">{{ publishError }}</p>
+      <button class="primary full" type="submit" [disabled]="publishing || savingProductChanges">
+        {{ savingProductChanges ? 'Guardando...' : editingProduct ? 'Guardar cambios' : publishing ? 'Publicando...' : 'Publicar' }}
+      </button>
+    </form>
+  </div>
+
+  <div class="modal product-detail-modal-wrapper" [class.show]="selectedProduct" (click)="closeProductDetails()">
+    <div class="modal-box product-detail-modal" (click)="$event.stopPropagation()">
+      <button class="close" type="button" aria-label="Cerrar" (click)="closeProductDetails()">×</button>
+
+      @if (selectedProduct) {
+        <div class="detail-image">
+          @if (selectedProduct.images?.length) {
+            <img [src]="selectedProduct.images[0]" [alt]="selectedProduct.name">
+          } @else {
+            <span class="detail-emoji" aria-hidden="true">{{ selectedProduct.emoji }}</span>
+          }
+        </div>
+
+        <div class="detail-content">
+          <div class="detail-topline">
+            <span class="detail-category">{{ selectedProduct.category }}</span>
+            <span class="detail-state">{{ selectedProduct.state }}</span>
+          </div>
+          <h2>{{ selectedProduct.name }}</h2>
+          <div class="detail-price">{{ selectedProduct.price | currency:'COP':'symbol-narrow':'1.0-0':'es-CO' }}</div>
+          <div class="detail-meta">
+            <span>⌖ {{ selectedProduct.ownerUsername || 'Campus universitario' }}</span>
+            <span>👤 {{ selectedProduct.ownerUsername || 'Vendedor' }}</span>
+          </div>
+          @if (productSaveSuccess) {
+            <p class="product-save-success" role="status">{{ productSaveSuccess }}</p>
+          }
+          <div class="detail-description-box">
+            {{ selectedProduct.description || 'Este producto todavía no tiene una descripción detallada.' }}
+          </div>
+          @if (productDeleteError) {
+            <p class="product-delete-error" role="alert">{{ productDeleteError }}</p>
+          }
+          <button class="primary full" type="button" (click)="messageSelectedSeller()">Contactar vendedor</button>
+          @if (selectedProduct.ownerId === currentUserId || currentUserRole === 'admin') {
+            <button class="edit-product-button" type="button" (click)="editSelectedProduct()">Editar publicación</button>
+            <button
+              class="delete-product-button"
+              type="button"
+              [disabled]="deletingProduct"
+              (click)="deleteSelectedProduct()"
+            >{{ deletingProduct ? 'Eliminando...' : 'Eliminar publicación' }}</button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,18 @@
+<section class="page-section active-section">
+  <h1 class="page-title">Mi perfil</h1>
+  <div class="profile-card">
+    <div class="profile-header">
+      <span class="avatar large">{{ loggedUser.slice(0, 1).toUpperCase() }}</span>
+      <div>
+        <h2>{{ loggedUser }} @if (role === 'admin') { <span class="profile-role-badge">ADMIN</span> }</h2>
+        <p>{{ role === 'admin' ? 'Administrador de UniMarket' : 'Miembro de la comunidad UniMarket' }}</p>
+      </div>
+    </div>
+    <div class="profile-grid">
+      <div class="info-box"><span>Usuario</span><strong>{{ loggedUser }}</strong></div>
+      <div class="info-box"><span>Publicaciones</span><strong>{{ productCount }}</strong></div>
+      <div class="info-box"><span>Favoritos guardados</span><strong>{{ favoriteCount }}</strong></div>
+      <div class="info-box"><span>Rol en la plataforma</span><strong>{{ role === 'admin' ? 'Administrador' : 'Usuario' }}</strong></div>
+    </div>
+  </div>
+</section>

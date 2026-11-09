@@ -1,0 +1,30 @@
+<section class="page-section active-section">
+  @if (products.length > 0) {
+    <h1 class="page-title">Favoritos</h1>
+    <p class="page-subtitle">Productos que guardaste para consultar después.</p>
+    <app-product-list
+      [products]="products"
+      [favoriteIds]="favoriteIds"
+      [viewerId]="viewerId"
+      (favoriteChange)="favoriteChange.emit($event)"
+      (contactSeller)="contactSeller.emit($event)"
+      (productClick)="productClick.emit($event)"
+    ></app-product-list>
+  } @else {
+    <div class="favorites-empty">
+      <div class="favorites-empty-heading">
+        <span class="favorites-empty-mark" aria-hidden="true">♥</span>
+        <div>
+          <h1 class="page-title">Mis favoritos</h1>
+          <p class="page-subtitle">Aún no tienes productos guardados.</p>
+        </div>
+      </div>
+      <div class="favorites-empty-message">
+        <span class="favorites-empty-icon" aria-hidden="true">♡</span>
+        <h2>Todavía no guardaste nada</h2>
+        <p>Explora el marketplace y toca el corazón en cualquier publicación para guardarla aquí.</p>
+        <button class="primary" type="button" (click)="exploreMarketplace.emit()">Explorar marketplace <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+  }
+</section>

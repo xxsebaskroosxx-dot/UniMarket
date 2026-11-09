@@ -1,0 +1,68 @@
+<section class="page-section active-section">
+  <h1 class="page-title">Mensajes</h1>
+  <div class="chat-layout">
+    <aside class="chat-sidebar">
+      <form class="chat-search" (ngSubmit)="searchUsers.emit()">
+        <label for="userSearch">Buscar personas</label>
+        <input
+          id="userSearch"
+          name="userSearch"
+          [ngModel]="searchTerm"
+          (ngModelChange)="searchTermChange.emit($event)"
+          placeholder="Nombre de usuario"
+        >
+        <button class="primary" type="submit">Buscar</button>
+      </form>
+      @if (searchResults.length) {
+        <div class="user-results">
+          @for (user of searchResults; track user.id) {
+            <button class="chat-item" type="button" (click)="startConversation.emit(user.id)">
+              <span class="chat-avatar small">{{ user.username.slice(0, 1).toUpperCase() }}</span>
+              <span class="chat-summary"><strong>{{ user.username }}</strong><span>{{ user.fullName }}</span></span>
+            </button>
+          }
+        </div>
+      }
+      <div class="chat-list">
+        @for (conversation of conversations; track conversation.id; let index = $index) {
+          <button class="chat-item" [class.active]="activeChat === index" type="button" (click)="activeChatChange.emit(index)">
+            <span class="chat-avatar small">{{ conversation.avatar }}</span>
+            <span class="chat-summary"><strong>{{ conversation.name }}</strong><span>{{ conversation.messages[conversation.messages.length - 1]?.text || 'Nuevo mensaje' }}</span></span>
+          </button>
+        } @empty {
+          <p class="chat-empty">Aún no tienes conversaciones.</p>
+        }
+      </div>
+    </aside>
+    <div class="chat-panel">
+      @if (currentConversation; as conversation) {
+        <div class="chat-header">
+          <div class="chat-user"><span class="chat-avatar">{{ conversation.avatar }}</span><div><strong>{{ conversation.name }}</strong><small>{{ conversation.status }}</small></div></div>
+        </div>
+        <div class="chat-messages">
+          @for (message of conversation.messages; track message.id) {
+            <div class="message" [class.mine]="message.sender === 'me'" [class.theirs]="message.sender === 'them'">{{ message.text }}</div>
+          } @empty {
+            <p class="chat-empty">Inicia la conversación con {{ conversation.name }}.</p>
+          }
+        </div>
+        <form class="chat-form" (ngSubmit)="sendMessage.emit()">
+          <input
+            name="chatInput"
+            [ngModel]="chatInput"
+            (ngModelChange)="chatInputChange.emit($event)"
+            placeholder="Escribe un mensaje..."
+            aria-label="Escribe un mensaje"
+            [disabled]="sending"
+          >
+          <button class="primary" type="submit" [disabled]="sending || !chatInput.trim()">Enviar</button>
+        </form>
+      } @else {
+        <div class="chat-empty">Busca a una persona o contacta al vendedor de una publicación para iniciar una conversación.</div>
+      }
+      @if (chatError) {
+        <p class="login-error">{{ chatError }}</p>
+      }
+    </div>
+  </div>
+</section>

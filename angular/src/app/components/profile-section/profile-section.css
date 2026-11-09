@@ -1,0 +1,10 @@
+.profile-role-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eaf7ee;
+  color: #087a35;
+  font-size: 11px;
+  vertical-align: middle;
+}

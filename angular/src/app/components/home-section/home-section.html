@@ -1,0 +1,47 @@
+<section class="page-section active-section">
+  <div class="hero">
+    <div class="hero-text">
+      <h1>Compra y vende<br>entre estudiantes</h1>
+      <p>Encuentra lo que necesitas o vende lo que ya no usas. Fácil, rápido y seguro.</p>
+      <button class="primary" type="button" (click)="publishRequest.emit()">Publicar producto →</button>
+    </div>
+    <div class="hero-image" aria-hidden="true">🎓 🛍️</div>
+  </div>
+
+  <div class="section-heading">
+    <h2>Categorías</h2>
+    <button type="button" (click)="showAllCategories.emit()">Ver todas →</button>
+  </div>
+  <div class="categories">
+    @for (category of categories; track category; let index = $index) {
+      <button class="category" type="button" (click)="categorySelected.emit(category)">
+        {{ categoryIcons[index] }}<span>{{ category }}</span>
+      </button>
+    }
+  </div>
+
+  <div class="section-heading">
+    <h2>Productos destacados</h2>
+    <button type="button" (click)="showAllCategories.emit()">Ver todos →</button>
+  </div>
+  <app-product-list
+    [products]="products"
+    [favoriteIds]="favoriteIds"
+    [viewerId]="viewerId"
+    (favoriteChange)="favoriteChange.emit($event)"
+    (contactSeller)="contactSeller.emit($event)"
+    (productClick)="productClick.emit($event)"
+  ></app-product-list>
+
+  <div class="benefits">
+    <div>👥 <strong>100% Universitario</strong><small>Hecho para estudiantes</small></div>
+    <div>🛡️ <strong>Seguro y confiable</strong><small>Perfiles verificados</small></div>
+    <div>⚡ <strong>Fácil y rápido</strong><small>Publica en minutos</small></div>
+  </div>
+  <section class="stats">
+    <div><span>👥</span><p>Estudiantes activos<strong>1.256</strong><em>↑ 12% este mes</em></p></div>
+    <div><span>▣</span><p>Publicaciones<strong>{{ products.length }}</strong><em>En UniMarket</em></p></div>
+    <div><span>♢</span><p>Transacciones<strong>312</strong><em>↑ 8% este mes</em></p></div>
+    <div><span>🛡</span><p>Comunidad segura<strong>100%</strong><em>Perfiles verificados</em></p></div>
+  </section>
+</section>

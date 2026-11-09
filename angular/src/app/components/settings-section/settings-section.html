@@ -1,0 +1,14 @@
+<section class="page-section active-section">
+  <h1 class="page-title">Configuración</h1>
+  <p class="page-subtitle">Personaliza tu experiencia.</p>
+  <div class="settings-list">
+    <label class="setting-row">
+      <span><strong>Modo oscuro</strong><small>Usar una apariencia oscura en la plataforma.</small></span>
+      <span class="switch"><input type="checkbox" [checked]="darkMode" (change)="onDarkModeChange($event)"><span class="slider"></span></span>
+    </label>
+    <label class="setting-row">
+      <span><strong>Perfil privado</strong><small>Limitar la visibilidad de la información de tu perfil.</small></span>
+      <span class="switch"><input type="checkbox" [checked]="privateProfile" (change)="onPrivacyChange($event)"><span class="slider"></span></span>
+    </label>
+  </div>
+</section>

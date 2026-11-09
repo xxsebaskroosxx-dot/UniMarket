@@ -1,0 +1,47 @@
+<article class="ride-card" [class.expanded]="isExpanded">
+  <header class="ride-header">
+    <div>
+      <p class="eyebrow">Viaje compartido</p>
+      <h2>{{ ride.driver }}</h2>
+      @if (ride.createdAt) {
+        <p class="published">Publicado {{ ride.createdAt | timeAgo }}</p>
+      }
+    </div>
+    <button
+      class="favorite-button"
+      type="button"
+      [class.favorite]="isFavorite"
+      [attr.aria-pressed]="isFavorite"
+      [attr.aria-label]="isFavorite ? 'Quitar de favoritos' : 'Añadir a favoritos'"
+      (click)="toggleFavorite($event)">
+      {{ isFavorite ? '♥' : '♡' }}
+    </button>
+  </header>
+
+  <div class="ride-details">
+    <div>
+      <span class="detail-label">Hora de salida</span>
+      <strong>{{ ride.time }}</strong>
+    </div>
+    <div>
+      <span class="detail-label">Precio por persona</span>
+      <strong>{{ formattedPrice }}</strong>
+    </div>
+  </div>
+
+  <p class="countdown">{{ timeLeft }} para la salida</p>
+
+  @if (isExpanded) {
+    <div class="expanded-details">
+      <span>Conductor: {{ ride.driver }}</span>
+      <span>Salida programada para las {{ ride.time }}</span>
+    </div>
+  }
+
+  <footer class="ride-actions">
+    <button class="secondary-button" type="button" (click)="toggleExpand()">
+      {{ isExpanded ? 'Ver menos' : 'Ver detalles' }}
+    </button>
+    <button class="delete-button" type="button" (click)="deleteRide($event)">Eliminar</button>
+  </footer>
+</article>

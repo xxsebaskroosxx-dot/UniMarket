@@ -1,0 +1,16 @@
+<section class="page-section active-section">
+  <h1 class="page-title">{{ isAdmin ? 'Gestión de publicaciones' : 'Mis publicaciones' }}</h1>
+  <p class="page-subtitle">{{ isAdmin ? 'Administra las publicaciones de todos los usuarios.' : 'Administra los productos que has publicado.' }}</p>
+  <button class="primary" type="button" (click)="publishRequest.emit()">+ Publicar producto</button>
+  <div class="my-list">
+    @for (product of products; track product.id) {
+      <article>
+        <span>{{ product.images?.[0] ? '🖼️' : product.emoji }}</span>
+        <div><strong>{{ product.name }}</strong><p>{{ money(product.price) }} · {{ product.state }} @if (isAdmin) { · {{ product.ownerUsername || 'Vendedor' }} }</p></div>
+        <button class="primary" type="button" (click)="productClick.emit(product)">Editar o eliminar</button>
+      </article>
+    } @empty {
+      <p>Aún no has publicado productos.</p>
+    }
+  </div>
+</section>

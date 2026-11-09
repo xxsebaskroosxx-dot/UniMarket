@@ -1,0 +1,25 @@
+<section class="page-section active-section">
+  <h1 class="page-title">Categorías</h1>
+  <p class="page-subtitle">Encuentra productos según lo que necesitas.</p>
+  <div class="category-large">
+    @for (category of categories; track category; let index = $index) {
+      <button class="category-card" type="button" (click)="categorySelected.emit(category)">
+        {{ categoryIcons[index] }}<strong>{{ category }}</strong>
+      </button>
+    }
+  </div>
+  @if (activeCategory) {
+    <div class="section-heading">
+      <h2>{{ activeCategory }}</h2>
+      <button type="button" (click)="clearCategory.emit()">Ver todas</button>
+    </div>
+  }
+  <app-product-list
+    [products]="products"
+    [favoriteIds]="favoriteIds"
+    [viewerId]="viewerId"
+    (favoriteChange)="favoriteChange.emit($event)"
+    (contactSeller)="contactSeller.emit($event)"
+    (productClick)="productClick.emit($event)"
+  ></app-product-list>
+</section>
