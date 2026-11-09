@@ -5,6 +5,8 @@ export interface Product {
   category: string;
   emoji: string;
   state: string;
+  listingType?: 'Venta' | 'Intercambio';
+  tradeWishlist?: string;
   images?: string[];
   description?: string;
   ownerId?: string;
