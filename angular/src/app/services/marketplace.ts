@@ -18,6 +18,8 @@ interface ProductRow {
   category: string;
   emoji: string;
   state: string;
+  listing_type: 'Venta' | 'Intercambio' | null;
+  trade_wishlist: string | null;
   images: string[];
   description: string | null;
   owner_id: string;
@@ -151,7 +153,7 @@ export class MarketplaceService {
   async loadProducts(): Promise<Product[]> {
     const { data, error } = await this.client()
       .from('products')
-      .select('id, name, price, category, emoji, state, images, description, owner_id')
+      .select('id, name, price, category, emoji, state, listing_type, trade_wishlist, images, description, owner_id')
       .order('created_at', { ascending: false });
     if (error) throw error;
 
@@ -170,6 +172,8 @@ export class MarketplaceService {
       category: row.category,
       emoji: row.emoji,
       state: row.state,
+      listingType: row.listing_type ?? 'Venta',
+      tradeWishlist: row.trade_wishlist ?? undefined,
       images: row.images ?? [],
       description: row.description ?? undefined,
       ownerId: row.owner_id,
@@ -200,10 +204,12 @@ export class MarketplaceService {
         category: product.category,
         emoji: product.emoji,
         state: product.state,
+        listing_type: product.listingType ?? 'Venta',
+        trade_wishlist: product.tradeWishlist ?? null,
         description: product.description ?? null,
         images: imageUrls,
       })
-      .select('id, name, price, category, emoji, state, images, description, owner_id')
+      .select('id, name, price, category, emoji, state, listing_type, trade_wishlist, images, description, owner_id')
       .single();
     if (error) throw error;
     return {
@@ -229,7 +235,7 @@ export class MarketplaceService {
 
   async updateProduct(
     productId: number,
-    changes: Pick<Product, 'name' | 'price' | 'category' | 'description' | 'state'>,
+    changes: Pick<Product, 'name' | 'price' | 'category' | 'description' | 'state' | 'listingType' | 'tradeWishlist'>,
   ): Promise<void> {
     const request = this.client()
       .from('products')
@@ -239,6 +245,8 @@ export class MarketplaceService {
         category: changes.category,
         description: changes.description ?? null,
         state: changes.state,
+        listing_type: changes.listingType ?? 'Venta',
+        trade_wishlist: changes.tradeWishlist ?? null,
       })
       .eq('id', productId)
       .select('id')
