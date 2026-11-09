@@ -1,11 +1,11 @@
 <aside class="sidebar" [class.mobile-open]="mobileOpen">
-  <div class="brand">
+  <button class="brand brand-link" type="button" (click)="selectSection('inicio')" aria-label="Volver al inicio">
     <div class="brand-logo">🎓</div>
     <div>
       <h2>Uni<span>Market</span></h2>
       <small>Marketplace universitario</small>
     </div>
-  </div>
+  </button>
 
   <nav>
     @for (item of navigation.slice(0, 6); track item.id) {
