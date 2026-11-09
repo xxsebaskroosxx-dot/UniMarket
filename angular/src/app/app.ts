@@ -94,6 +94,8 @@ export class App implements OnInit, OnDestroy {
   newCategory = this.categories[0];
   newDescription = '';
   newState: Product['state'] = 'Publicado';
+  newListingType: Product['listingType'] = 'Venta';
+  newTradeWishlist = '';
   newProductImages: string[] = [];
   publishError = '';
   chatInput = '';
@@ -210,6 +212,8 @@ export class App implements OnInit, OnDestroy {
     this.newCategory = product.category;
     this.newDescription = product.description ?? '';
     this.newState = product.state;
+    this.newListingType = product.listingType ?? 'Venta';
+    this.newTradeWishlist = product.tradeWishlist ?? '';
     this.newProductFiles = [];
     this.newProductImages = product.images ?? [];
     this.publishError = '';
@@ -253,6 +257,8 @@ export class App implements OnInit, OnDestroy {
     this.newCategory = this.categories[0];
     this.newDescription = '';
     this.newState = 'Publicado';
+    this.newListingType = 'Venta';
+    this.newTradeWishlist = '';
     this.newProductFiles = [];
     this.newProductImages = [];
     this.publishError = '';
@@ -384,6 +390,8 @@ export class App implements OnInit, OnDestroy {
         category: this.newCategory,
         emoji: '📦',
         state: 'Publicado',
+        listingType: this.newListingType,
+        tradeWishlist: this.newListingType === 'Intercambio' ? this.newTradeWishlist.trim() || undefined : undefined,
         description: this.newDescription.trim() || undefined,
       }, this.newProductFiles, this.currentUserId);
       this.products = [product, ...this.products];
@@ -423,6 +431,8 @@ export class App implements OnInit, OnDestroy {
         category: this.newCategory,
         description: this.newDescription.trim() || undefined,
         state: this.newState,
+        listingType: this.newListingType,
+        tradeWishlist: this.newListingType === 'Intercambio' ? this.newTradeWishlist.trim() || undefined : undefined,
       };
       await this.marketplace.updateProduct(product.id, updated);
       this.products = this.products.map((item) => item.id === product.id ? updated : item);
