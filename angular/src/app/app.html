@@ -107,6 +107,16 @@
         <p class="login-error">{{ dataError }}</p>
       }
 
+      @if (activeSection === 'inicio' || activeSection === 'categorias') {
+        <div class="catalog-toolbar" aria-label="Filtros del catálogo">
+          <label>Precio mínimo <input type="number" min="0" [(ngModel)]="minPrice" name="minPrice" placeholder="$0"></label>
+          <label>Precio máximo <input type="number" min="0" [(ngModel)]="maxPrice" name="maxPrice" placeholder="Sin límite"></label>
+          @if (minPrice !== null || maxPrice !== null) {
+            <button type="button" class="clear-filter" (click)="clearPriceFilter()">Limpiar filtros</button>
+          }
+        </div>
+      }
+
       @switch (activeSection) {
         @case ('inicio') {
           <app-home-section
@@ -193,6 +203,9 @@
             (privateProfileChange)="togglePrivacy($event)"
           ></app-settings-section>
         }
+        @case ('ayuda') {
+          <app-help-section></app-help-section>
+        }
       }
     </main>
   </div>
@@ -207,6 +220,14 @@
       <select name="newCategory" [(ngModel)]="newCategory">
         @for (category of categories; track category) { <option [value]="category">{{ category }}</option> }
       </select>
+      @if (editingProduct) {
+        <label class="field-label" for="newState">Estado de la publicación</label>
+        <select id="newState" name="newState" [(ngModel)]="newState">
+          <option value="Publicado">Disponible</option>
+          <option value="Reservado">Reservado</option>
+          <option value="Vendido">Vendido</option>
+        </select>
+      }
       <textarea name="newDescription" [(ngModel)]="newDescription" placeholder="Descripción (opcional)"></textarea>
       @if (editingProduct) {
         <p class="edit-images-note">Las fotografías actuales se conservarán al guardar los cambios.</p>
@@ -235,7 +256,12 @@
       @if (selectedProduct) {
         <div class="detail-image">
           @if (selectedProduct.images?.length) {
-            <img [src]="selectedProduct.images[0]" [alt]="selectedProduct.name">
+            <img [src]="selectedProduct.images[selectedImageIndex]" [alt]="selectedProduct.name + ' - imagen ' + (selectedImageIndex + 1)">
+            @if (selectedProduct.images.length > 1) {
+              <button class="gallery-arrow gallery-prev" type="button" aria-label="Imagen anterior" (click)="previousProductImage()">‹</button>
+              <button class="gallery-arrow gallery-next" type="button" aria-label="Imagen siguiente" (click)="nextProductImage()">›</button>
+              <span class="gallery-counter">{{ selectedImageIndex + 1 }} / {{ selectedProduct.images.length }}</span>
+            }
           } @else {
             <span class="detail-emoji" aria-hidden="true">{{ selectedProduct.emoji }}</span>
           }
