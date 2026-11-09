@@ -14,6 +14,8 @@ create table public.products (
   category text not null,
   emoji text not null default '📦',
   state text not null default 'Publicado',
+  listing_type text not null default 'Venta' check (listing_type in ('Venta', 'Intercambio')),
+  trade_wishlist text,
   images text[] not null default '{}',
   description text,
   created_at timestamptz not null default now()
