@@ -229,7 +229,7 @@ export class MarketplaceService {
 
   async updateProduct(
     productId: number,
-    changes: Pick<Product, 'name' | 'price' | 'category' | 'description'>,
+    changes: Pick<Product, 'name' | 'price' | 'category' | 'description' | 'state'>,
   ): Promise<void> {
     const request = this.client()
       .from('products')
@@ -238,6 +238,7 @@ export class MarketplaceService {
         price: changes.price,
         category: changes.category,
         description: changes.description ?? null,
+        state: changes.state,
       })
       .eq('id', productId)
       .select('id')
