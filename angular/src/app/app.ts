@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CategoriesSectionComponent } from './components/categories-section/categories-section';
 import { FavoritesSectionComponent } from './components/favorites-section/favorites-section';
 import { HomeSectionComponent } from './components/home-section/home-section';
+import { HelpSectionComponent } from './components/help-section/help-section';
 import { LoginFormComponent } from './components/login-form/login-form';
 import { MessagesSectionComponent } from './components/messages-section/messages-section';
 import { MyListingsSectionComponent } from './components/my-listings-section/my-listings-section';
@@ -29,6 +30,7 @@ import { ProductSortOption, strategyFor } from './strategies/product-sort.strate
     NotificationsSectionComponent,
     ProfileSectionComponent,
     SettingsSectionComponent,
+    HelpSectionComponent,
     SidebarComponent,
   ],
   selector: 'app-root',
@@ -41,6 +43,7 @@ export class App implements OnInit, OnDestroy {
   readonly categories = ['Libros', 'Electrónica', 'Ropa', 'Papelería', 'Muebles', 'Deportes', 'Otros'];
   readonly categoryIcons = ['📖', '💻', '👕', '✏️', '🛋️', '⚽', '•••'];
   readonly navigation = [
+    { id: 'ayuda', icon: '?', label: 'Ayuda y seguridad' },
     { id: 'inicio', icon: '⌂', label: 'Inicio' },
     { id: 'categorias', icon: '▦', label: 'Categorías' },
     { id: 'publicaciones', icon: '▤', label: 'Mis publicaciones' },
@@ -60,6 +63,8 @@ export class App implements OnInit, OnDestroy {
   activeCategory = '';
   searchTerm = '';
   sortOption: ProductSortOption = 'recent';
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
   favorites: number[] = [];
   darkMode = false;
   privateProfile = false;
@@ -78,6 +83,7 @@ export class App implements OnInit, OnDestroy {
   publishOpen = false;
   editingProduct: Product | null = null;
   selectedProduct: Product | null = null;
+  selectedImageIndex = 0;
   registerName = '';
   registerUsername = '';
   registerEmail = '';
@@ -87,6 +93,7 @@ export class App implements OnInit, OnDestroy {
   newPrice: number | null = null;
   newCategory = this.categories[0];
   newDescription = '';
+  newState: Product['state'] = 'Publicado';
   newProductImages: string[] = [];
   publishError = '';
   chatInput = '';
@@ -134,7 +141,9 @@ export class App implements OnInit, OnDestroy {
     const filteredProducts = this.products.filter((product) => {
       const matchesTerm = !term || product.name.toLocaleLowerCase().includes(term) || product.category.toLocaleLowerCase().includes(term);
       const matchesCategory = !this.activeCategory || product.category === this.activeCategory;
-      return matchesTerm && matchesCategory;
+      const matchesMinPrice = this.minPrice === null || product.price >= this.minPrice;
+      const matchesMaxPrice = this.maxPrice === null || product.price <= this.maxPrice;
+      return matchesTerm && matchesCategory && matchesMinPrice && matchesMaxPrice;
     });
     return strategyFor(this.sortOption).sort(filteredProducts);
   }
@@ -163,6 +172,22 @@ export class App implements OnInit, OnDestroy {
 
   openProductDetails(product: Product): void {
     this.selectedProduct = product;
+    this.selectedImageIndex = 0;
+  }
+
+  nextProductImage(): void {
+    const images = this.selectedProduct?.images ?? [];
+    if (images.length > 1) this.selectedImageIndex = (this.selectedImageIndex + 1) % images.length;
+  }
+
+  previousProductImage(): void {
+    const images = this.selectedProduct?.images ?? [];
+    if (images.length > 1) this.selectedImageIndex = (this.selectedImageIndex - 1 + images.length) % images.length;
+  }
+
+  clearPriceFilter(): void {
+    this.minPrice = null;
+    this.maxPrice = null;
   }
 
   openNewProductForm(): void {
@@ -184,6 +209,7 @@ export class App implements OnInit, OnDestroy {
     this.newPrice = product.price;
     this.newCategory = product.category;
     this.newDescription = product.description ?? '';
+    this.newState = product.state;
     this.newProductFiles = [];
     this.newProductImages = product.images ?? [];
     this.publishError = '';
@@ -194,6 +220,7 @@ export class App implements OnInit, OnDestroy {
 
   closeProductDetails(): void {
     this.selectedProduct = null;
+    this.selectedImageIndex = 0;
     this.productDeleteError = '';
     this.productSaveSuccess = '';
   }
@@ -225,6 +252,7 @@ export class App implements OnInit, OnDestroy {
     this.newPrice = null;
     this.newCategory = this.categories[0];
     this.newDescription = '';
+    this.newState = 'Publicado';
     this.newProductFiles = [];
     this.newProductImages = [];
     this.publishError = '';
@@ -394,6 +422,7 @@ export class App implements OnInit, OnDestroy {
         price,
         category: this.newCategory,
         description: this.newDescription.trim() || undefined,
+        state: this.newState,
       };
       await this.marketplace.updateProduct(product.id, updated);
       this.products = this.products.map((item) => item.id === product.id ? updated : item);
