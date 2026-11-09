@@ -27,6 +27,9 @@ nav{display:flex;flex-direction:column;gap:5px}.nav-item{height:43px;border-radi
   position:fixed;inset:0;background:linear-gradient(135deg,#effaf2,#ffffff 55%,#e8f7ed);
   display:flex;align-items:center;justify-content:center;z-index:90;padding:20px;
 }
+
+.sort-control{display:flex;align-items:center;gap:7px;color:#526057;font-size:11px;white-space:nowrap}
+.sort-control select{height:42px;border:1px solid var(--border);border-radius:12px;background:#fff;color:var(--dark);padding:0 10px;font-size:12px;outline:none}
 .login-card{
   width:420px;background:#fff;border:1px solid #e1e8e3;border-radius:18px;
   padding:34px;box-shadow:0 18px 55px rgba(16,42,31,.12);

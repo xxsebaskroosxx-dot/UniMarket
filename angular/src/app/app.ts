@@ -14,6 +14,7 @@ import { SidebarComponent } from './components/sidebar/sidebar';
 import { Conversation } from './models/conversation';
 import { Product } from './models/product';
 import { MarketplaceService, UserProfile } from './services/marketplace';
+import { ProductSortOption, strategyFor } from './strategies/product-sort.strategy';
 
 @Component({
   imports: [
@@ -58,6 +59,7 @@ export class App implements OnInit, OnDestroy {
   mobileMenuOpen = false;
   activeCategory = '';
   searchTerm = '';
+  sortOption: ProductSortOption = 'recent';
   favorites: number[] = [];
   darkMode = false;
   privateProfile = false;
@@ -129,11 +131,12 @@ export class App implements OnInit, OnDestroy {
 
   get visibleProducts(): Product[] {
     const term = this.searchTerm.trim().toLocaleLowerCase();
-    return this.products.filter((product) => {
+    const filteredProducts = this.products.filter((product) => {
       const matchesTerm = !term || product.name.toLocaleLowerCase().includes(term) || product.category.toLocaleLowerCase().includes(term);
       const matchesCategory = !this.activeCategory || product.category === this.activeCategory;
       return matchesTerm && matchesCategory;
     });
+    return strategyFor(this.sortOption).sort(filteredProducts);
   }
 
   get favoriteProducts(): Product[] {

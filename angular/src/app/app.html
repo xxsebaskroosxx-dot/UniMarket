@@ -82,6 +82,15 @@
           <span>⌕</span>
           <input aria-label="Buscar productos" name="searchTerm" [(ngModel)]="searchTerm" placeholder="Buscar productos, categorías o usuarios...">
         </label>
+        <label class="sort-control">
+          <span>Ordenar</span>
+          <select aria-label="Ordenar productos" name="sortOption" [(ngModel)]="sortOption">
+            <option value="recent">Más recientes</option>
+            <option value="price-asc">Precio menor</option>
+            <option value="price-desc">Precio mayor</option>
+            <option value="name-asc">Nombre A-Z</option>
+          </select>
+        </label>
         <div class="top-actions">
           <button class="icon favorite-shortcut" type="button" aria-label="Favoritos" (click)="showSection('favoritos')">
             ♡ @if (favorites.length > 0) { <i>{{ favorites.length }}</i> }
